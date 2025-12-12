@@ -6,3 +6,14 @@ person.jamie_thomas:
 person.jemma_thomas:
   entity_picture: /local/JemmaBadge.jpg
 zone.home: {}
+
+# configuration.yaml
+
+input_boolean.joe_manual_status:
+  state_map:
+    'on': 'home'
+    'off': 'not_home'
+input_boolean.jamie_manual_status:
+  state_map:
+    'on': 'home'
+    'off': 'not_home'

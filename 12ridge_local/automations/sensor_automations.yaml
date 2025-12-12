@@ -2,7 +2,7 @@
   alias: Smoke Detected
   description: ''
   trigger:
-  - entity_id: binary_sensor.zcombo_g_smoke_co_alarm_smoke_detected
+  - entity_id: binary_sensor.smoke_alarm_smoke_detected
     from: 'off'
     platform: state
     to: 'on'
@@ -22,7 +22,7 @@
   alias: Carbon Monoxide Detected
   description: ''
   trigger:
-  - entity_id: binary_sensor.zcombo_g_smoke_co_alarm_carbon_monoxide_detected
+  - entity_id: binary_sensor.smoke_alarm_carbon_monoxide_detected
     from: 'off'
     platform: state
     to: 'on'
@@ -95,7 +95,7 @@
   description: ''
   trigger:
   - platform: numeric_state
-    entity_id: sensor.thermostat_temperature
+    entity_id: sensor.thermostat_air_temperature
     below: '47'
   condition: []
   action:
@@ -110,4 +110,18 @@
         retry: 900
         expire: 7200
         sound: climb
+  mode: single
+- alias: Propane Level Low Alert
+  description: Notify when heating propane drops below 30%.
+  trigger:
+    - platform: numeric_state
+      entity_id: sensor.heating_propane_level
+      below: 30
+  condition: []
+  action:
+    - service: notify.pushover
+      data:
+        message: "Lake house Heating propane level is below 30%. Current level: {{ states('sensor.heating_propane_level') }}%"
+        title: "Lake housek
+        Low Heating Propane Warning"
   mode: single

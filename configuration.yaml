@@ -37,6 +37,9 @@ command_line:
 # All HA Variables
 var: !include_dir_merge_named 12ridge_local/variables/
 
+# Input booleans (person / home states)
+# input_boolean: (in input_booleans.yaml)
+
 # Automations I create in the UI
 automation: !include automations.yaml
 
@@ -81,11 +84,6 @@ shopping_list:
 
 input_number: !include 12ridge_local/input_number.yaml
 
-
-input_boolean:
-  view_calibrate_propane:
-    name: Notify when someone arrives home
-#    icon: mdi:car
 
 influxdb:
   host: a0d7b954-influxdb

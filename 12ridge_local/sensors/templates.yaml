@@ -1,6 +1,22 @@
 - platform: template
   sensors:
     #
+    # Fuel Propane Level
+    #
+    heating_propane_level:
+      unit_of_measurement: "%"
+      icon_template: "mdi:gas-cylinder"
+      entity_id: sensor.propane_tanks_tank_level
+      value_template: >-
+        {% set level = states('sensor.propane_tanks_tank_level') | float(0) %}
+        {% set full_depth = 45.2 %}
+        {% set offset = 0.0 %}
+        {% if full_depth > offset and level > 0 %}
+          {{ ((level - offset) / (full_depth - offset) * 100) | round(1) }}
+        {% else %}
+          0
+        {% endif %}
+    #
     # Smoke and Carbon Monixide Detectors
     #
     # Deprecated
@@ -21,13 +37,13 @@
     front_door_status:
       friendly_name: "Front_Door Status"
       value_template: >-
-        {% if is_state("binary_sensor.front_door_sensor", "off")%}
+        {% if is_state("light.front_door_basic", "off")%}
           closed
         {% else %}
           open
         {% endif %}
       icon_template: >-
-        {% if is_state("binary_sensor.front_door_sensor", "off")%}
+        {% if is_state("light.front_door_basic", "off")%}
           mdi:door
         {% else %}
           mdi:door-open
