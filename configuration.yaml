@@ -62,6 +62,9 @@ switch: !include 12ridge_local/switches.yaml
 # House lighting 
 light: !include 12ridge_local/lights.yaml
 
+# Scenes
+scene: !include scenes.yaml
+
 #
 # Device Tracking
 #

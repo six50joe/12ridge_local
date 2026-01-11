@@ -1,4 +1,724 @@
-resources:
-  - url: /local/config-template-card.js
-    type: module
-    
+title: Lake House
+views:
+  - badges:
+      - type: entity
+        show_name: false
+        show_state: true
+        show_icon: true
+        entity: person.joe
+        show_entity_picture: true
+      - type: entity
+        show_name: false
+        show_state: true
+        show_icon: true
+        entity: person.jamie
+        show_entity_picture: true
+      - type: entity
+        show_name: false
+        show_state: true
+        show_icon: true
+        entity: person.jemma
+        show_entity_picture: true
+      - entity: sun.sun
+    cards:
+      - type: markdown
+        content: '# Lake House'
+      - type: vertical-stack
+        cards:
+          - type: horizontal-stack
+            cards:
+              - type: custom:button-card
+                entity: input_boolean.joe_manual_status
+                show_icon: true
+                show_name: true
+                tap_action:
+                  action: toggle
+                state:
+                  - value: 'on'
+                    name: Set Joe to AWAY
+                    icon: mdi:face-man
+                  - value: 'off'
+                    name: Set Joe to HOME
+                    icon: mdi:face-man-outline
+              - type: custom:button-card
+                entity: input_boolean.jamie_manual_status
+                show_icon: true
+                show_name: true
+                tap_action:
+                  action: toggle
+                state:
+                  - value: 'on'
+                    name: Set Jamie to AWAY
+                    icon: mdi:face-woman
+                  - value: 'off'
+                    name: Set Jamie to HOME
+                    icon: mdi:face-woman-outline
+          - type: horizontal-stack
+            cards:
+              - type: button
+                icon: mdi:home-variant
+                show_icon: true
+                show_name: true
+                tap_action:
+                  action: call-service
+                  service: var.set
+                  service_data:
+                    entity_id: var.trusted_home
+                    value: true
+              - type: button
+                icon: mdi:home-variant-outline
+                show_icon: true
+                show_name: true
+                tap_action:
+                  action: call-service
+                  service: var.set
+                  service_data:
+                    entity_id: var.trusted_home
+                    value: false
+          - type: horizontal-stack
+            cards:
+              - type: markdown
+                content: |
+                  Trusted Home:  {{ states('var.trusted_home') }}
+      - type: vertical-stack
+        cards:
+          - type: custom:config-template-card
+            entities:
+              zone.home: null
+            card:
+              type: markdown
+              content: "\_ {% if is_state(\"var.disable_notifications\", \"False\") %} NOTIFICATIONS ENABLED {% else %} NOTIFICATIONS DISABLED {% endif %}"
+              card_mod:
+                style: >
+                  ha-card {background-color: {% if
+                  is_state('var.disable_notifications', 'False') %} #E1EFDF {%
+                  else %} #EA2B4B {% endif %} }
+
+                  ha-card {color:  {% if is_state('var.disable_notifications',
+                  'False') %} #000000 {% else %} #FFFFFF {% endif %} } ;}
+          - type: horizontal-stack
+            cards:
+              - show_name: true
+                show_icon: true
+                type: button
+                icon_height: 40px
+                icon: mdi:publish-off
+                tap_action:
+                  action: call-service
+                  service: automation.trigger
+                  service_data:
+                    entity_id: automation.stop_notifications
+              - show_name: true
+                show_icon: true
+                type: button
+                icon_height: 40px
+                icon: mdi:publish
+                tap_action:
+                  action: call-service
+                  service: automation.trigger
+                  service_data:
+                    entity_id: automation.resume_notifications
+      - entity: weather.lake_house
+        type: weather-forecast
+      - aspect_ratio: 50%
+        title: Bolton Landing
+        type: iframe
+        url: >-
+          https://embed.windy.com/embed2.html?lat=43.584&lon=-73.646&zoom=9&level=surface&overlay=wind&menu=&message=&marker=&calendar=&pressure=&type=map&location=coordinates&detail=&detailLat=43.584&detailLon=-73.646&metricWind=default&metricTemp=default&radarRange=-1
+      - cards:
+          - entity: sensor.heating_propane_level
+            icon: mdi:propane-tank-outline
+            type: entity
+            unit: '%'
+        title: Propane
+        type: vertical-stack
+      - entity: sensor.34dt_hassio
+        type: entity
+      - entities:
+          - entity: person.joe
+          - entity: person.jamie
+          - entity: person.jemma
+        hours_to_show: 0
+        title: Where We Are
+        type: map
+        theme_mode: auto
+      - type: entities
+        entities:
+          - entity: sensor.front_door_status
+          - entity: sensor.garage_status
+      - type: media-control
+        entity: media_player.lg_webos_smart_tv
+      - type: entities
+        entities:
+          - entity: sensor.outdoor_environment_air_temperature
+          - entity: sensor.outdoor_environment_last_seen
+          - entity: sensor.outdoor_environment_illuminance
+          - entity: sensor.strips_comfort_drips_multisensor_node_status
+    icon: mdi:home
+    path: default_view
+    title: Home
+  - badges: []
+    cards:
+      - entity: climate.thermostat
+        name: Thermostat
+        type: thermostat
+      - type: entity
+        entity: fan.ceiling_fan
+        name: Master Bedroom Ceiling Fan
+    icon: mdi:home-thermometer
+    path: environment
+    title: Environment
+  - badges: []
+    cards:
+      - entities:
+          - entity: sensor.front_door_status
+        title: Front Door
+        type: entities
+      - entities:
+          - entity: sensor.garage_status
+        title: Garage Door
+        type: entities
+      - entities:
+          - entity: binary_sensor.smoke_alarm_carbon_monoxide_detected
+          - entity: binary_sensor.smoke_alarm_smoke_detected
+        title: Smoke and Carbon. Monoxide
+        type: entities
+      - entity: sensor.flood_status
+        name: Flood
+        type: entity
+    icon: mdi:door-closed-lock
+    path: security
+    title: Security
+  - badges: []
+    cards:
+      - show_name: true
+        show_icon: true
+        type: button
+        tap_action:
+          action: call-service
+          service: automation.trigger
+          service_data: {}
+          target:
+            entity_id: automation.tv_on
+        entity: automation.tv_on
+        icon: mdi:toggle-switch
+      - show_name: true
+        show_icon: true
+        type: button
+        tap_action:
+          action: call-service
+          service: automation.trigger
+          service_data: {}
+          target:
+            entity_id:
+              - automation.tv_on
+              - automation.tv_on_duplicate
+        entity: automation.tv_on
+        icon: mdi:toggle-switch-off-outline
+        name: TV Off
+      - type: light
+        entity: light.path_lights
+      - type: light
+        entity: light.driveway_flood_light
+      - type: grid
+        title: Track Lighting Scenes
+        columns: 2
+        square: false
+        cards:
+          - type: button
+            name: Bright
+            icon: mdi:lightbulb-on
+            tap_action:
+              action: call-service
+              service: scene.turn_on
+              target:
+                entity_id: scene.track_lights_color_bright
+          - type: button
+            name: Relaxed
+            icon: mdi:weather-sunset
+            tap_action:
+              action: call-service
+              service: scene.turn_on
+              target:
+                entity_id: scene.track_lights_color_relaxed
+          - type: button
+            name: Cozy
+            icon: mdi:fireplace
+            tap_action:
+              action: call-service
+              service: scene.turn_on
+              target:
+                entity_id: scene.track_lights_color_cozy
+          - type: button
+            name: Movie Night
+            icon: mdi:movie-open
+            tap_action:
+              action: call-service
+              service: scene.turn_on
+              target:
+                entity_id: scene.track_lights_color_movie
+          - type: button
+            name: Dinner
+            icon: mdi:silverware-fork-knife
+            tap_action:
+              action: call-service
+              service: scene.turn_on
+              target:
+                entity_id: scene.track_lights_color_dinner
+          - type: button
+            name: Focus
+            icon: mdi:brain
+            tap_action:
+              action: call-service
+              service: scene.turn_on
+              target:
+                entity_id: scene.track_lights_color_focus
+          - type: button
+            name: Energize
+            icon: mdi:weather-sunny
+            tap_action:
+              action: call-service
+              service: scene.turn_on
+              target:
+                entity_id: scene.track_lights_color_energize
+          - type: button
+            name: Reading
+            icon: mdi:book-open-page-variant
+            tap_action:
+              action: call-service
+              service: scene.turn_on
+              target:
+                entity_id: scene.track_lights_color_reading
+          - type: button
+            name: Late Night
+            icon: mdi:moon-waning-crescent
+            tap_action:
+              action: call-service
+              service: scene.turn_on
+              target:
+                entity_id: scene.track_lights_color_late_night
+          - type: button
+            name: All Off
+            icon: mdi:power
+            tap_action:
+              action: call-service
+              service: scene.turn_on
+              target:
+                entity_id: scene.track_lights_all_off
+    icon: mdi:lightbulb-on-outline
+    path: lights
+    title: Lights
+  - badges: []
+    cards:
+      - cards:
+          - entities:
+              - entity: camera.upstairs_bedroom
+            title: Cameras
+            type: entities
+        type: vertical-stack
+    icon: mdi:camera
+    path: cameras
+    title: Cameras
+  - title: Power Usage
+    path: power-usage
+    icon: mdi:lightning-bolt
+    badges: []
+    cards:
+      - type: entities
+        entities:
+          - entity: sensor.home_energy_meter_electric_consumed_w
+          - entity: sensor.home_energy_meter_electric_consumed_w_3
+          - entity: sensor.home_energy_meter_electric_consumed_w_2
+          - entity: sensor.home_energy_meter_power
+          - entity: sensor.home_energy_meter_power_3
+          - entity: sensor.home_energy_meter_power_2
+          - entity: sensor.home_energy_meter_electric_consumed_kwh
+          - entity: sensor.home_energy_meter_electric_consumed_kwh_2
+      - type: history-graph
+        entities:
+          - entity: sensor.home_energy_meter_electric_consumed_w
+          - entity: sensor.home_energy_meter_electric_consumed_w_3
+          - entity: sensor.home_energy_meter_electric_consumed_w_2
+        hours_to_show: 24
+        refresh_interval: 0
+        title: Electricity Consumed
+      - type: history-graph
+        entities:
+          - entity: sensor.home_energy_meter_power
+          - entity: sensor.home_energy_meter_power_3
+          - entity: sensor.home_energy_meter_power_2
+        hours_to_show: 24
+        refresh_interval: 0
+        title: Electricity - Power
+      - type: history-graph
+        entities:
+          - entity: sensor.home_energy_meter_electric_consumed_kwh
+          - entity: sensor.home_energy_meter_electric_consumed_kwh_2
+        hours_to_show: 24
+        refresh_interval: 0
+        title: Electricity - KWH Consumed
+  - badges: []
+    cards:
+      - type: markdown
+        content: |
+          Front Door: {{ states('binary_sensor.front_door_sensor') }}
+      - type: entity
+        entity: media_player.lg_webos_smart_tv
+      - type: entity
+        entity: switch.home_theater
+      - type: entities
+        entities:
+          - entity: remote.living_room
+      - type: entity
+        entity: input_number.propane_gauge_pct
+    path: sandbox
+    title: Sandbox
+  - cards:
+      - entities:
+          - entity: sensor.icloud3_event_log
+        title: iCloud Event Log
+        type: custom:icloud3-event-log-card
+    icon: mdi:information-outline
+    title: iCloud Event Log
+  - icon: mdi:devices
+    title: Device Status
+    path: device-status
+    type: panel
+    badges: []
+    cards:
+      - type: vertical-stack
+        cards:
+          - type: custom:config-template-card
+            entities:
+              zone.home: null
+            card:
+              type: markdown
+              content: Doors and Windows
+              card_mod:
+                style: |
+                  ha-card {background-color:  #000000 ;}
+                  ha-card {color:  #FFFFFF ;}
+          - type: horizontal-stack
+            cards:
+              - type: vertical-stack
+                cards:
+                  - type: custom:config-template-card
+                    entities:
+                      - >-
+                        sensor.z_wave_plus_gold_plated_reliability_garage_door_tilt_sensor_node_status
+                    card:
+                      type: markdown
+                      content: >
+                        Last updated at {% from 'device_updated_days.jinja'
+                        import last_updated %} {{
+                        last_updated('var.garage_door_sensor_lupd') }}
+                      title: Garage Door Sensor
+                      card_mod:
+                        style: >
+                          {% from 'device_updated_days.jinja' import
+                          entity_responsive_color %}
+                           ha-card {background-color: {{ entity_responsive_color('var.garage_door_sensor_lupd') }};}
+              - type: vertical-stack
+                cards:
+                  - type: custom:config-template-card
+                    entities:
+                      - sensor.flood_sensor_air_temperature_2
+                    card:
+                      type: markdown
+                      content: >
+                        Last updated at {% from 'device_updated_days.jinja'
+                        import last_updated %} {{
+                        last_updated('var.flood_sensor_lupd') }}
+                      title: Flood Sensor
+                      card_mod:
+                        style: >
+                          {% from 'device_updated_days.jinja' import
+                          entity_responsive_color %}
+                           ha-card {background-color: {{ entity_responsive_color('var.flood_sensor_lupd') }};}
+              - type: vertical-stack
+                cards:
+                  - type: custom:config-template-card
+                    entities:
+                      - binary_sensor.front_door_sensor
+                    card:
+                      type: markdown
+                      content: >
+                        Last updated at {% from 'device_updated_days.jinja'
+                        import last_updated %} {{
+                        last_updated('var.front_door_lupd') }}
+                      title: Front Door
+                      card_mod:
+                        style: >
+                          {% from 'device_updated_days.jinja' import
+                          entity_responsive_color %}
+                           ha-card {background-color: {{ entity_responsive_color('var.front_door_lupd') }};}
+          - type: custom:config-template-card
+            entities:
+              zone.home: null
+            card:
+              type: markdown
+              content: Utilities
+              card_mod:
+                style: |
+                  ha-card {background-color:  #000000 ;}
+                  ha-card {color:  #FFFFFF ;}
+          - type: horizontal-stack
+            cards:
+              - type: vertical-stack
+                cards:
+                  - type: custom:config-template-card
+                    entities:
+                      - sensor.home_energy_meter_electric_consumed_kwh
+                    card:
+                      type: markdown
+                      content: >
+                        Last updated at {% from 'device_updated_days.jinja'
+                        import last_updated %} {{
+                        last_updated('var.electric_meter_lupd') }}
+                      title: Electricity Meter
+                      card_mod:
+                        style: >
+                          {% from 'device_updated_days.jinja' import
+                          entity_responsive_color %}
+                           ha-card {background-color: {{ entity_responsive_color('var.electric_meter_lupd') }};}
+              - type: vertical-stack
+                cards:
+                  - type: custom:config-template-card
+                    entities:
+                      - sensor.mimolite_general_purpose
+                    card:
+                      type: markdown
+                      content: >
+                        Last updated at {% from 'device_updated_days.jinja'
+                        import last_updated %} {{
+                        last_updated('var.propane_level_lupd') }}
+                      title: Propane Level
+                      card_mod:
+                        style: >
+                          {% from 'device_updated_days.jinja' import
+                          entity_responsive_color %}
+                           ha-card {background-color: {{ entity_responsive_color('var.propane_level_lupd') }};}
+          - type: custom:config-template-card
+            entities:
+              zone.home: null
+            card:
+              type: markdown
+              content: People and Item Locations
+              card_mod:
+                style: |
+                  ha-card {background-color:  #000000 ;}
+                  ha-card {color:  #FFFFFF ;}
+          - type: horizontal-stack
+            cards:
+              - type: vertical-stack
+                cards:
+                  - type: custom:config-template-card
+                    entities:
+                      - person.joe_thomas
+                    card:
+                      type: markdown
+                      content: >
+                        Last updated at {% from 'device_updated_days.jinja'
+                        import last_updated %} {{ last_updated('var.joe_lupd')
+                        }}
+                      title: Life360 Joe
+                      card_mod:
+                        style: >
+                          {% from 'device_updated_days.jinja' import
+                          entity_responsive_color %}
+                           ha-card {background-color: {{ entity_responsive_color('var.joe_lupd') }};}
+                  - type: custom:config-template-card
+                    entities:
+                      - person.jamie_thomas
+                    card:
+                      type: markdown
+                      content: >
+                        Last updated at {% from 'device_updated_days.jinja'
+                        import last_updated %} {{ last_updated('var.jamie_lupd')
+                        }}
+                      title: Life360 Jamie
+                      card_mod:
+                        style: >
+                          {% from 'device_updated_days.jinja' import
+                          entity_responsive_color %}
+                           ha-card {background-color: {{ entity_responsive_color('var.jamie_lupd') }};}
+              - type: vertical-stack
+                cards:
+                  - type: custom:config-template-card
+                    entities:
+                      - person.jemma_thomas
+                    card:
+                      type: markdown
+                      content: >
+                        Last updated at {% from 'device_updated_days.jinja'
+                        import last_updated %} {{ last_updated('var.jemma_lupd')
+                        }}
+                      title: Life360 Jemma
+                      card_mod:
+                        style: >
+                          {% from 'device_updated_days.jinja' import
+                          entity_responsive_color %}
+                           ha-card {background-color: {{ entity_responsive_color('var.jemma_lupd') }};}
+                  - type: custom:config-template-card
+                    entities:
+                      - trusted_home
+                    card:
+                      type: markdown
+                      content: >
+                        Last updated at {% from 'device_updated_days.jinja'
+                        import last_updated %} {{
+                        last_updated('var.trusted_home_lupd') }}
+                      title: Trusted Home
+                      card_mod:
+                        style: >
+                          {% from 'device_updated_days.jinja' import
+                          entity_responsive_color %}
+                           ha-card {background-color: {{ entity_responsive_color('var.trusted_home_lupd') }};}
+          - type: custom:config-template-card
+            entities:
+              zone.home: null
+            card:
+              type: markdown
+              content: Temperature, light, etc.
+              card_mod:
+                style: |
+                  ha-card {background-color:  #000000 ;}
+                  ha-card {color:  #FFFFFF ;}
+          - type: horizontal-stack
+            cards:
+              - type: vertical-stack
+                cards:
+                  - type: custom:config-template-card
+                    entities:
+                      - sensor.outdoor_environment_air_temperature
+                    card:
+                      type: markdown
+                      content: >
+                        Last updated at {% from 'device_updated_days.jinja'
+                        import last_updated %} {{
+                        last_updated('var.outside_temp_lupd') }}
+                      title: Outside Temperature
+                      card_mod:
+                        style: >
+                          {% from 'device_updated_days.jinja' import
+                          entity_responsive_color %}
+                           ha-card {background-color: {{ entity_responsive_color('var.outside_temp_lupd') }};}
+          - type: custom:config-template-card
+            entities:
+              zone.home: null
+            card:
+              type: markdown
+              content: Thermostats
+              card_mod:
+                style: |
+                  ha-card {background-color:  #000000 ;}
+                  ha-card {color:  #FFFFFF ;}
+          - type: horizontal-stack
+            cards:
+              - type: vertical-stack
+                cards:
+                  - type: custom:config-template-card
+                    entities:
+                      - sensor.z_wave_thermostat_air_temperature
+                    card:
+                      type: markdown
+                      content: >
+                        Last updated at {% from 'device_updated_days.jinja'
+                        import last_updated %} {{
+                        last_updated('var.thermostat_lupd') }}
+                      title: Thermostat
+                      card_mod:
+                        style: >
+                          {% from 'device_updated_days.jinja' import
+                          entity_responsive_color %}
+                           ha-card {background-color: {{ entity_responsive_color('var.thermostat_lupd') }};}
+          - type: custom:config-template-card
+            entities:
+              zone.home: null
+            card:
+              type: markdown
+              content: Lights
+              card_mod:
+                style: |
+                  ha-card {background-color:  #000000 ;}
+                  ha-card {color:  #FFFFFF ;}
+          - type: horizontal-stack
+            cards:
+              - type: vertical-stack
+                cards:
+                  - type: custom:config-template-card
+                    entities:
+                      - switch.outdoor_lamp_current_value
+                    card:
+                      type: markdown
+                      content: >
+                        Last updated at {% from 'device_updated_days.jinja'
+                        import last_updated %} {{
+                        last_updated('var.path_light_lupd') }}
+                      title: Path Light
+                      card_mod:
+                        style: >
+                          {% from 'device_updated_days.jinja' import
+                          entity_responsive_color %}
+                           ha-card {background-color: {{ entity_responsive_color('var.path_light_lupd') }};}
+              - type: vertical-stack
+                cards:
+                  - type: custom:config-template-card
+                    entities:
+                      - switch.outdoor_z_wave_plug_in_module_1_channel
+                    card:
+                      type: markdown
+                      content: >
+                        Last updated at {% from 'device_updated_days.jinja'
+                        import last_updated %} {{
+                        last_updated('var.flood_light_lupd') }}
+                      title: Flood Light
+                      card_mod:
+                        style: >
+                          {% from 'device_updated_days.jinja' import
+                          entity_responsive_color %}
+                           ha-card {background-color: {{ entity_responsive_color('var.flood_light_lupd') }};}
+          - type: custom:config-template-card
+            entities:
+              zone.home: null
+            card:
+              type: markdown
+              content: Smoke and CO2 Detectors
+              card_mod:
+                style: |
+                  ha-card {background-color:  #000000 ;}
+                  ha-card {color:  #FFFFFF ;}
+          - type: horizontal-stack
+            cards:
+              - type: vertical-stack
+                cards:
+                  - type: custom:config-template-card
+                    entities:
+                      - sensor.node_33_node_status
+                    card:
+                      type: markdown
+                      content: >
+                        Last updated at {% from 'device_updated_days.jinja'
+                        import last_updated %} {{
+                        last_updated('var.smoke_co2_lupd') }}
+                      title: Smoke and CO2 Detector
+                      card_mod:
+                        style: >
+                          {% from 'device_updated_days.jinja' import
+                          entity_responsive_color %}
+                           ha-card {background-color: {{ entity_responsive_color('var.smoke_co2_lupd') }};}
+  - type: sections
+    max_columns: 4
+    title: To Fix
+    path: to-fix
+    icon: mdi:note-edit-outline
+    sections:
+      - type: grid
+        cards:
+          - type: heading
+            heading: New section
+          - display_order: none
+            type: todo-list
+            entity: todo.shopping_list
+            title: ' For Fixing'
+    cards: []

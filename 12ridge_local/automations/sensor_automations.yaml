@@ -117,6 +117,7 @@
     - platform: numeric_state
       entity_id: sensor.heating_propane_level
       below: 30
+      above: 0 # Filter out bad readings
   condition: []
   action:
     - service: notify.pushover

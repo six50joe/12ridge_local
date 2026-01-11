@@ -6,15 +6,26 @@
     heating_propane_level:
       unit_of_measurement: "%"
       icon_template: "mdi:gas-cylinder"
-      entity_id: sensor.propane_tanks_tank_level
+      # Note: entity_id is deprecated in modern templates; 
+      # HA now automatically tracks entities inside the template.
       value_template: >-
-        {% set level = states('sensor.propane_tanks_tank_level') | float(0) %}
+        {% set raw_level = states('sensor.propane_tanks_tank_level') | float(0) %}
         {% set full_depth = 45.2 %}
         {% set offset = 0.0 %}
-        {% if full_depth > offset and level > 0 %}
-          {{ ((level - offset) / (full_depth - offset) * 100) | round(1) }}
+        
+        {# Calculate the potential new percentage #}
+        {% if full_depth > offset and raw_level > 0 %}
+          {% set current_calc = ((raw_level - offset) / (full_depth - offset) * 100) | round(1) %}
         {% else %}
-          0
+          {% set current_calc = 0 %}
+        {% endif %}
+
+        {# FILTER LOGIC: Only update if the reading is between 1% and 100% #}
+        {# If it's 0 or > 100, we return the sensor's current state (self) to ignore the spike #}
+        {% if 0 < current_calc <= 100 %}
+          {{ current_calc }}
+        {% else %}
+          {{ states('sensor.heating_propane_level') | float(0) }}
         {% endif %}
     #
     # Smoke and Carbon Monixide Detectors

@@ -177,3 +177,21 @@
     data:
       skip_condition: true
   mode: single
+- id: '1768053204221'
+  alias: Propane Level Low Alert
+  description: Notify when heating propane drops below 30%.
+  triggers:
+  - entity_id: sensor.heating_propane_level
+    below: 30
+    trigger: numeric_state
+  conditions:
+  - condition: numeric_state
+    entity_id: sensor.heating_propane_level
+    above: 0.1
+  actions:
+  - data:
+      message: 'Lake house Heating propane level is below 30%. Current level: {{ states(''sensor.heating_propane_level'')
+        }}%'
+      title: Lake housek Low Heating Propane Warning
+    action: notify.pushover
+  mode: single

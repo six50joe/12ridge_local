@@ -17,3 +17,9 @@ input_boolean.jamie_manual_status:
   state_map:
     'on': 'home'
     'off': 'not_home'
+
+
+light.path_lights:
+  icon: mdi:floor-lamp-torchiere-outline
+light.driveway_flood_light:  
+  icon: mdi:light-flood-down
